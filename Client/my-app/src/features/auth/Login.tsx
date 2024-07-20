@@ -1,66 +1,62 @@
+// src/features/auth/Login.tsx
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { login } from "./authSlice";
-import { Button, TextField, Container, Link } from "@mui/material";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import { RootState } from "../../app/store";
+import { Box, Button, TextField, Typography } from "@mui/material";
+import { login } from "./authSlice";
 
-const LoginContainer = styled(Container)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 50px;
-`;
-
-const Login = () => {
-  const [email, setEmail] = useState("");
+const Login: React.FC = () => {
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
-  const handleLogin = () => {
-    if (email === "admin" && password === "admin") {
-      dispatch(login(email));
-      navigate("/");
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (username === "admin" && password === "admin") {
+      dispatch(login(username)); // Передаем имя пользователя как payload
+      navigate("/devices"); // Перенаправление на список устройств после успешного логина
+    } else {
+      alert("Invalid credentials");
     }
   };
 
-  const handleRegisterRedirect = () => {
-    navigate("/register");
-  };
-
-  if (isAuthenticated) {
-    navigate("/");
-  }
-
   return (
-    <LoginContainer maxWidth="sm">
-      <TextField
-        label="Email"
-        variant="outlined"
-        margin="normal"
-        fullWidth
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <TextField
-        label="Password"
-        variant="outlined"
-        margin="normal"
-        fullWidth
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <Button variant="contained" color="primary" onClick={handleLogin}>
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+      height="100vh"
+      textAlign="center"
+      padding={2}
+    >
+      <Typography variant="h4" gutterBottom>
         Login
-      </Button>
-      <Link component="button" variant="body2" onClick={handleRegisterRedirect}>
-        No account? Register here
-      </Link>
-    </LoginContainer>
+      </Typography>
+      <form onSubmit={handleSubmit}>
+        <Box display="flex" flexDirection="column" gap={2}>
+          <TextField
+            label="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            margin="normal"
+            required
+          />
+          <TextField
+            label="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            margin="normal"
+            required
+          />
+          <Button type="submit" variant="contained" color="primary">
+            Login
+          </Button>
+        </Box>
+      </form>
+    </Box>
   );
 };
 
