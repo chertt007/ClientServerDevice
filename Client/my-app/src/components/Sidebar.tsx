@@ -8,10 +8,13 @@ import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
   const devices = useSelector((state: RootState) => state.devices.devices);
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
 
   const handleDrawerOpen = () => {
-    setOpen(true);
+    if (isAuthenticated) {
+      setOpen(true);
+    }
   };
 
   const handleDrawerClose = () => {

@@ -55,7 +55,9 @@ const App: React.FC = () => {
   }, [themeMode]);
 
   const handleDrawerToggle = () => {
-    setDrawerOpen(!drawerOpen);
+    // надо понять зачем эта кнопка и как она будет работать
+    // пока что она возвращает нас к списку устройств
+    // setDrawerOpen(!drawerOpen);
   };
 
   const handleThemeChange = (mode: "light" | "dark" | "auto") => {

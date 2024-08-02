@@ -1,5 +1,5 @@
 // src/components/Navbar.tsx
-import React from "react";
+import React, { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -7,7 +7,8 @@ import {
   IconButton,
   Box,
   ToggleButton,
-  ToggleButtonGroup
+  ToggleButtonGroup,
+  Tooltip
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 
@@ -21,9 +22,11 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ handleDrawerToggle, handleThemeChange }) => {
-  const [theme, setTheme] = React.useState<"light" | "dark" | "auto">(
+  const [theme, setTheme] = useState<"light" | "dark" | "auto">(
     (localStorage.getItem("themeMode") as "light" | "dark" | "auto") || "auto"
   );
+
+  const [themeMenuOpen, setThemeMenuOpen] = useState(false);
 
   const handleThemeToggle = (
     event: React.MouseEvent<HTMLElement>,
@@ -33,6 +36,10 @@ const Navbar: React.FC<NavbarProps> = ({ handleDrawerToggle, handleThemeChange }
       setTheme(newTheme);
       handleThemeChange(newTheme);
     }
+  };
+
+  const toggleThemeMenu = () => {
+    setThemeMenuOpen(!themeMenuOpen);
   };
 
   return (
@@ -50,23 +57,36 @@ const Navbar: React.FC<NavbarProps> = ({ handleDrawerToggle, handleThemeChange }
           Device Management
         </Typography>
         <Box display="flex" alignItems="center" marginLeft="auto">
-          <ToggleButtonGroup
-            value={theme}
-            exclusive
-            onChange={handleThemeToggle}
-            aria-label="theme mode"
-            color="primary"
-          >
-            <ToggleButton value="light" aria-label="light theme">
-              <WiDaySunny fill="white" />
-            </ToggleButton>
-            <ToggleButton value="dark" aria-label="dark theme">
-              <WiMoonFull />
-            </ToggleButton>
-            <ToggleButton value="auto" aria-label="auto theme">
-              <WiMoonAltFirstQuarter />
-            </ToggleButton>
-          </ToggleButtonGroup>
+          <IconButton onClick={toggleThemeMenu} color="inherit">
+            <WiMoonAltFirstQuarter />
+          </IconButton>
+          {themeMenuOpen && (
+            <Box display="flex" alignItems="center">
+              <ToggleButtonGroup
+                value={theme}
+                exclusive
+                onChange={handleThemeToggle}
+                aria-label="theme mode"
+                color="primary"
+              >
+                <Tooltip title="Light Theme">
+                  <ToggleButton value="light" aria-label="light theme">
+                    <WiDaySunny fill="white" />
+                  </ToggleButton>
+                </Tooltip>
+                <Tooltip title="Dark Theme">
+                  <ToggleButton value="dark" aria-label="dark theme">
+                    <WiMoonFull />
+                  </ToggleButton>
+                </Tooltip>
+                <Tooltip title="Auto Theme">
+                  <ToggleButton value="auto" aria-label="auto theme">
+                    <WiMoonAltFirstQuarter />
+                  </ToggleButton>
+                </Tooltip>
+              </ToggleButtonGroup>
+            </Box>
+          )}
         </Box>
       </Toolbar>
     </AppBar>

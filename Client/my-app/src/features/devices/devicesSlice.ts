@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface Device {
   id: number;
   status: "on" | "off";
+  selectedTab: number;
 }
 
 interface DevicesState {
@@ -12,9 +13,9 @@ interface DevicesState {
 
 const initialState: DevicesState = {
   devices: [
-    { id: 1, status: "off" },
-    { id: 2, status: "off" },
-    { id: 3, status: "off" }
+    { id: 1, status: "off", selectedTab: 0 },
+    { id: 2, status: "off", selectedTab: 0 },
+    { id: 3, status: "off", selectedTab: 0 }
   ],
   selectedDevice: null
 };
@@ -31,12 +32,23 @@ const devicesSlice = createSlice({
         const device = state.devices.find((device) => device.id === state.selectedDevice!.id);
         if (device) {
           device.status = device.status === "on" ? "off" : "on";
-          state.selectedDevice = device; // обновляем selectedDevice
+          state.selectedDevice = device;
+        }
+      }
+    },
+    selectTab(state, action: PayloadAction<number>) {
+      if (state.selectedDevice) {
+        // Обновляем выбранную вкладку в selectedDevice
+        state.selectedDevice.selectedTab = action.payload;
+        // Находим устройство в списке devices и обновляем его
+        const device = state.devices.find((device) => device.id === state.selectedDevice!.id);
+        if (device) {
+          device.selectedTab = action.payload;
         }
       }
     }
   }
 });
 
-export const { selectDevice, toggleDeviceStatus } = devicesSlice.actions;
+export const { selectDevice, toggleDeviceStatus, selectTab } = devicesSlice.actions;
 export default devicesSlice.reducer;
